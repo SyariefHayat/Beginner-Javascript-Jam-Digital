@@ -13,21 +13,46 @@
   <body>
     <header>
       <nav>
-        <i class="ri-time-line active"></i>
-        <i class="ri-alarm-line"></i>
-        <i class="ri-timer-line"></i>
-        <i class="ri-hourglass-2-line"></i>
+        <i class="ri-time-line active" onclick="activeIcon(1)"></i>
+        <i class="ri-alarm-line" onclick="activeIcon(2)"></i>
+        <i class="ri-timer-line" onclick="activeIcon(3)"></i>
+        <i class="ri-hourglass-2-line" onclick="activeIcon(4)"></i>
       </nav>
     </header>
     <main>
       <form action="">
-        <label for="search"><i class="ri-search-line"></i><label>
-        <input type="text" id="search" name="search" placeholder="Cari negara atau kota">
+        <label for="search"><i class="ri-search-line"></i></label>
+        <input
+          type="text"
+          id="search"
+          name="search"
+          placeholder="Cari negara atau kota"
+        />
       </form>
-      <div class="container">
+      <div class="clock-container">
         <div class="location">Indonesia</div>
         <div class="clock"></div>
         <div class="date"></div>
+      </div>
+      <div class="alarm-container hidden">
+        <div class="alarm-input">
+          <input
+            type="number"
+            id="hoursInput"
+            placeholder="00"
+            min="0"
+            max="23"
+          />
+          <input
+            type="number"
+            id="minutesInput"
+            placeholder="00"
+            min="0"
+            max="59"
+          />
+        </div>
+        <button class="setAlarmButton"><i class="ri-add-line"></i></button>
+        <div class="display-alarm"></div>
       </div>
     </main>
     <script src="script.js"></script>

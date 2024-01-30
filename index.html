@@ -40,19 +40,37 @@
             type="number"
             id="hoursInput"
             placeholder="00"
-            min="0"
+            min="00"
             max="23"
           />
           <input
             type="number"
             id="minutesInput"
             placeholder="00"
-            min="0"
+            min="00"
             max="59"
           />
         </div>
         <button class="setAlarmButton"><i class="ri-add-line"></i></button>
         <div class="display-alarm"></div>
+      </div>
+      <div class="stopwatch-container hidden">
+        <div class="stopwatch">00:00.00</div>
+        <div class="stopwatch-buttons">
+          <button class="start">
+            <i class="ri-play-mini-fill" onclick="startStopwatch()"></i>
+          </button>
+          <button class="flag hidden">
+            <i class="ri-flag-2-fill"></i>
+          </button>
+          <button class="pause hidden">
+            <i class="ri-pause-fill" onclick="toggleStopwatch()"></i>
+          </button>
+          <button class="reset hidden">
+            <i class="ri-square-fill" onclick="resetStopwatch()"></i>
+          </button>
+        </div>
+        <div class="display-stopwatch"></div>
       </div>
     </main>
     <script src="javascript/script.js"></script>

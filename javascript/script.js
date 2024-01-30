@@ -4,11 +4,24 @@ const timerIcon = document.querySelector(".ri-timer-line");
 const couthdownIcon = document.querySelector(".ri-hourglass-2-line");
 const searchForm = document.querySelector("form");
 const clockContainer = document.querySelector(".clock-container");
-const alarmContainer = document.querySelector(".alarm-container");
 const locationEl = document.querySelector(".location");
 const clockEl = document.querySelector(".clock");
 const dateEl = document.querySelector(".date");
+const alarmContainer = document.querySelector(".alarm-container");
 const setAlarmButton = document.querySelector(".setAlarmButton");
+const stopwatchContainer = document.querySelector(".stopwatch-container");
+const stopwatchEl = document.querySelector(".stopwatch");
+const stopwatchBtns = document.querySelector(".stopwatch-buttons");
+const startBtn = document.querySelector(".start");
+const flagBtn = document.querySelector(".flag");
+const pauseBtn = document.querySelector(".pause");
+const resetBtn = document.querySelector(".reset");
+const stopwatchDisplay = document.querySelector(".display-stopwatch");
+
+// Variabel Awal
+let stopwatch;
+let startTime;
+let running = false;
 
 function updateClock() {
   let now = new Date();
@@ -54,17 +67,30 @@ function activeIcon(n) {
   switch (n) {
     case 1:
       searchForm.style.display = "flex";
-      locationEl.style.display = "inherit";
-      dateEl.style.display = "inherit";
+      locationEl.style.display = "block";
+      clockEl.style.display = "block";
+      dateEl.style.display = "block";
       clockContainer.style.marginTop = "100px";
       alarmContainer.classList.add("hidden");
+      stopwatchContainer.classList.add("hidden");
       break;
     case 2:
       searchForm.style.display = "none";
       locationEl.style.display = "none";
+      clockEl.style.display = "block";
       dateEl.style.display = "none";
       clockContainer.style.margin = "0px";
       alarmContainer.classList.remove("hidden");
+      stopwatchContainer.classList.add("hidden");
+      break;
+    case 3:
+      searchForm.style.display = "none";
+      locationEl.style.display = "none";
+      clockEl.style.display = "none";
+      dateEl.style.display = "none";
+      clockContainer.style.margin = "0px";
+      stopwatchContainer.classList.remove("hidden")
+      alarmContainer.classList.add("hidden");
       break;
   }
 }
@@ -111,8 +137,73 @@ setAlarmButton.addEventListener("click", () => {
   })
 });
 
+function startStopwatch() {
+  startBtn.classList.add("hidden");
+  flagBtn.classList.remove("hidden");
+  pauseBtn.classList.remove("hidden");
+  resetBtn.classList.add("hidden");
 
+  if (!running) {
+    if (startTime === undefined) {
+      // Jika stopwatch belum pernah dijalankan atau di-reset
+      startTime = new Date().getTime();
+    } else {
+      // Jika stopwatch pernah dihentikan, gunakan waktu terakhir
+      startTime = new Date().getTime() - pausedTime;
+    }
 
+    stopwatch = setInterval(updateStopwatch, 10);
+    running = true;
+  }
+}
+
+function toggleStopwatch() {
+  flagBtn.classList.add("hidden");
+  pauseBtn.classList.add("hidden");
+  resetBtn.classList.remove("hidden");
+  startBtn.classList.remove("hidden");
+
+  if (running) {
+    stopStopwatch();
+  } else {
+    startStopwatch();
+  }
+}
+
+function stopStopwatch() {
+  if (running) {
+    clearInterval(stopwatch);
+    running = false;
+    pausedTime = new Date().getTime() - startTime; // Simpan waktu terhenti
+  }
+
+}
+
+function resetStopwatch() {
+  resetBtn.classList.add("hidden");
+
+  stopStopwatch();
+  startTime = undefined; // Reset waktu awal
+  stopwatchEl.innerText = "00:00.00";
+}
+
+function updateStopwatch() {
+  const currentTime = new Date().getTime();
+  const elapsedMilliseconds = currentTime - startTime;
+
+  const minutes = Math.floor(elapsedMilliseconds / (60 * 1000));
+  const seconds = Math.floor((elapsedMilliseconds % (60 * 1000)) / 1000);
+  const milliseconds = Math.floor((elapsedMilliseconds % 1000) / 10);
+
+  const formattedTime = `${pad(minutes)}:${pad(seconds)}.${pad(
+    milliseconds
+  )}`;
+  stopwatchEl.innerText = formattedTime;
+}
+
+function pad(number) {
+  return number < 10 ? "0" + number : number;
+}
 
 
 

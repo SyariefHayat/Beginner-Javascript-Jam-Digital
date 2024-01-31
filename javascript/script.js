@@ -21,6 +21,7 @@ const stopwatchDisplay = document.querySelector(".display-stopwatch");
 // Variabel Awal
 let stopwatch;
 let startTime;
+let formattedTime;
 let running = false;
 
 function updateClock() {
@@ -170,13 +171,34 @@ function toggleStopwatch() {
   }
 }
 
+function flagStopwatch(formattedTime) {
+  const stopwatchFlag = document.createElement("div");
+  stopwatchFlag.classList.add("stopwatch-flag");
+  const stopwatchFlagNumber = document.createElement("div");
+  stopwatchFlagNumber.classList.add("stopwatch-flag-number");
+  const newFlag = document.createElement("i");
+  newFlag.classList.add("ri-flag-2-fill");
+  const stopwatchFlagStop = document.createElement("div");
+  stopwatchFlagStop.classList.add("stopwatch-flag-stop");
+  stopwatchFlagStop.innerHTML = `+ ${formattedTime}`;
+  const stopwatchFlagMarker = document.createElement("div");
+  stopwatchFlagMarker.classList.add("stopwatch-flag-marker");
+  stopwatchFlagMarker.innerHTML = formattedTime;
+
+  stopwatchFlagNumber.prepend(newFlag);
+
+  stopwatchFlag.appendChild(stopwatchFlagNumber);
+  stopwatchFlag.appendChild(stopwatchFlagStop);
+  stopwatchFlag.appendChild(stopwatchFlagMarker);
+  stopwatchDisplay.prepend(stopwatchFlag);
+}
+
 function stopStopwatch() {
   if (running) {
     clearInterval(stopwatch);
     running = false;
     pausedTime = new Date().getTime() - startTime; // Simpan waktu terhenti
   }
-
 }
 
 function resetStopwatch() {
@@ -185,6 +207,7 @@ function resetStopwatch() {
   stopStopwatch();
   startTime = undefined; // Reset waktu awal
   stopwatchEl.innerText = "00:00.00";
+  stopwatchDisplay.innerHTML = "";
 }
 
 function updateStopwatch() {
@@ -195,7 +218,7 @@ function updateStopwatch() {
   const seconds = Math.floor((elapsedMilliseconds % (60 * 1000)) / 1000);
   const milliseconds = Math.floor((elapsedMilliseconds % 1000) / 10);
 
-  const formattedTime = `${pad(minutes)}:${pad(seconds)}.${pad(
+  formattedTime = `${pad(minutes)}:${pad(seconds)}.${pad(
     milliseconds
   )}`;
   stopwatchEl.innerText = formattedTime;

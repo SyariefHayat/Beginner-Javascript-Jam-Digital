@@ -1,14 +1,21 @@
+// QUERY ICON
 const clockIcon = document.querySelector(".ri-time-line");
 const alarmIcon = document.querySelector(".ri-alarm-line");
 const timerIcon = document.querySelector(".ri-timer-line");
 const couthdownIcon = document.querySelector(".ri-hourglass-2-line");
+
+// QUERY CLOCK SECTION
 const searchForm = document.querySelector("form");
 const clockContainer = document.querySelector(".clock-container");
 const locationEl = document.querySelector(".location");
 const clockEl = document.querySelector(".clock");
 const dateEl = document.querySelector(".date");
+
+// QUERY ALARM SECTION
 const alarmContainer = document.querySelector(".alarm-container");
 const setAlarmButton = document.querySelector(".setAlarmButton");
+
+// QUERY STOPWATCH SECTION
 const stopwatchContainer = document.querySelector(".stopwatch-container");
 const stopwatchEl = document.querySelector(".stopwatch");
 const stopwatchBtns = document.querySelector(".stopwatch-buttons");
@@ -18,11 +25,23 @@ const pauseBtn = document.querySelector(".pause");
 const resetBtn = document.querySelector(".reset");
 const stopwatchDisplay = document.querySelector(".display-stopwatch");
 
+// QUERY TIMER SECTION
+const timerContainer = document.querySelector(".timer-container");
+const timerInput = document.querySelector(".timer-input");
+const timer = document.querySelector(".timer");
+const timerBtnStart = document.querySelector(".timer-start");
+const timerBtnPause = document.querySelector(".timer-pause");
+const timerBtnReset = document.querySelector(".timer-reset");
+
 // Variabel Awal
 let stopwatch;
 let startTime;
+let pausedTime;
 let formattedTime;
 let running = false;
+let timerInterval;
+let totalSeconds;
+let pausedTotalSecond;
 
 function updateClock() {
   let now = new Date();
@@ -74,6 +93,7 @@ function activeIcon(n) {
       clockContainer.style.marginTop = "100px";
       alarmContainer.classList.add("hidden");
       stopwatchContainer.classList.add("hidden");
+      timerContainer.classList.add("hidden");
       break;
     case 2:
       searchForm.style.display = "none";
@@ -83,6 +103,7 @@ function activeIcon(n) {
       clockContainer.style.margin = "0px";
       alarmContainer.classList.remove("hidden");
       stopwatchContainer.classList.add("hidden");
+      timerContainer.classList.add("hidden");
       break;
     case 3:
       searchForm.style.display = "none";
@@ -92,7 +113,16 @@ function activeIcon(n) {
       clockContainer.style.margin = "0px";
       stopwatchContainer.classList.remove("hidden")
       alarmContainer.classList.add("hidden");
+      timerContainer.classList.add("hidden");
       break;
+    case 4:
+      searchForm.style.display = "none";
+      locationEl.style.display = "none";
+      clockEl.style.display = "none";
+      dateEl.style.display = "none";
+      stopwatchContainer.classList.add("hidden")
+      alarmContainer.classList.add("hidden");
+      timerContainer.classList.remove("hidden");
   }
 }
 
@@ -120,6 +150,7 @@ setAlarmButton.addEventListener("click", () => {
 
   const newAlarm = document.createElement("div");
   newAlarm.classList.add("alarm");
+
   const clearAlarm = document.createElement("i");
   clearAlarm.classList.add("ri-delete-bin-6-line");
 
@@ -133,7 +164,6 @@ setAlarmButton.addEventListener("click", () => {
 
   clearAlarm.addEventListener("click", (e) => {
     const clickedAlarm = e.target.parentNode;
-
     clickedAlarm.classList.add("hidden");
   })
 });
@@ -158,42 +188,13 @@ function startStopwatch() {
   }
 }
 
-function toggleStopwatch() {
+function stopStopwatch() {
   flagBtn.classList.add("hidden");
   pauseBtn.classList.add("hidden");
   resetBtn.classList.remove("hidden");
   startBtn.classList.remove("hidden");
 
-  if (running) {
-    stopStopwatch();
-  } else {
-    startStopwatch();
-  }
-}
-
-function flagStopwatch(formattedTime) {
-  const stopwatchFlag = document.createElement("div");
-  stopwatchFlag.classList.add("stopwatch-flag");
-  const stopwatchFlagNumber = document.createElement("div");
-  stopwatchFlagNumber.classList.add("stopwatch-flag-number");
-  const newFlag = document.createElement("i");
-  newFlag.classList.add("ri-flag-2-fill");
-  const stopwatchFlagStop = document.createElement("div");
-  stopwatchFlagStop.classList.add("stopwatch-flag-stop");
-  stopwatchFlagStop.innerHTML = `+ ${formattedTime}`;
-  const stopwatchFlagMarker = document.createElement("div");
-  stopwatchFlagMarker.classList.add("stopwatch-flag-marker");
-  stopwatchFlagMarker.innerHTML = formattedTime;
-
-  stopwatchFlagNumber.prepend(newFlag);
-
-  stopwatchFlag.appendChild(stopwatchFlagNumber);
-  stopwatchFlag.appendChild(stopwatchFlagStop);
-  stopwatchFlag.appendChild(stopwatchFlagMarker);
-  stopwatchDisplay.prepend(stopwatchFlag);
-}
-
-function stopStopwatch() {
+  // Jika stopwatch sedang berjalan, dan tombol stop di tekan
   if (running) {
     clearInterval(stopwatch);
     running = false;
@@ -208,6 +209,32 @@ function resetStopwatch() {
   startTime = undefined; // Reset waktu awal
   stopwatchEl.innerText = "00:00.00";
   stopwatchDisplay.innerHTML = "";
+}
+
+function flagStopwatch(formattedTime) {
+  const stopwatchFlag = document.createElement("div");
+  stopwatchFlag.classList.add("stopwatch-flag");
+
+  const stopwatchFlagNumber = document.createElement("div");
+  stopwatchFlagNumber.classList.add("stopwatch-flag-number");
+
+  const newFlag = document.createElement("i");
+  newFlag.classList.add("ri-flag-2-fill");
+
+  const stopwatchFlagStop = document.createElement("div");
+  stopwatchFlagStop.classList.add("stopwatch-flag-stop");
+  stopwatchFlagStop.innerHTML = `+ ${formattedTime}`;
+
+  const stopwatchFlagMarker = document.createElement("div");
+  stopwatchFlagMarker.classList.add("stopwatch-flag-marker");
+  stopwatchFlagMarker.innerHTML = formattedTime;
+
+  stopwatchFlagNumber.prepend(newFlag);
+
+  stopwatchFlag.appendChild(stopwatchFlagNumber);
+  stopwatchFlag.appendChild(stopwatchFlagStop);
+  stopwatchFlag.appendChild(stopwatchFlagMarker);
+  stopwatchDisplay.prepend(stopwatchFlag);
 }
 
 function updateStopwatch() {
@@ -227,6 +254,76 @@ function updateStopwatch() {
 function pad(number) {
   return number < 10 ? "0" + number : number;
 }
+
+function startTimer() {
+  timerInput.classList.add("hidden");
+  timer.classList.remove("hidden");
+  timerBtnStart.classList.add("hidden");
+  timerBtnPause.classList.remove("hidden");
+  timerBtnReset.classList.remove("hidden");
+
+  // Mengambil nilai input dari user
+  let hours = parseInt(timerInput.querySelector('input:nth-child(1)').value) || 0;
+  let minutes = parseInt(timerInput.querySelector('input:nth-child(2)').value) || 0;
+  let seconds = parseInt(timerInput.querySelector('input:nth-child(3)').value) || 0;
+
+  // Menghitung total detik dari input
+  totalSeconds = pausedTotalSecond || (hours * 3600 + minutes * 60 + seconds);
+
+  timer.innerText = formatTime(totalSeconds);
+
+  // Mengurangi nilai total detik setiap detik 
+  timerInterval = setInterval(function () {
+    // Ketika total detik 0
+    if (totalSeconds <= 0) {
+      alert("Timer Selesai");
+
+      clearInterval(timerInterval);
+
+      timerInput.classList.remove("hidden");
+      timer.classList.add("hidden");
+      timerBtnStart.classList.remove("hidden");
+      timerBtnPause.classList.add("hidden");
+      timerBtnReset.classList.add("hidden");
+    } else {
+      totalSeconds--;
+      timer.innerText = formatTime(totalSeconds);
+    }
+
+    pausedTotalSecond = "";
+  }, 1000);
+}
+
+// Mengonversi nilai total detik menjadi HH:MM:SS
+function formatTime(seconds) {
+  let h = Math.floor(seconds / 3600);
+  let m = Math.floor((seconds % 3600) / 60);
+  let s = seconds % 60;
+
+  return `${pad(h)}:${pad(m)}:${pad(s)}`;
+}
+
+
+function pauseTimer() {
+  timerBtnPause.classList.add("hidden");
+  timerBtnStart.classList.remove("hidden");
+
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    pausedTotalSecond = totalSeconds;
+  }
+}
+
+function resetTimer() {
+  timer.classList.add("hidden");
+  timerBtnPause.classList.add("hidden");
+  timerBtnReset.classList.add("hidden");
+  timerInput.classList.remove("hidden");
+  timerBtnStart.classList.remove("hidden");
+
+  clearInterval(timerInterval);
+}
+
 
 
 

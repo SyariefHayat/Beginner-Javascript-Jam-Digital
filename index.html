@@ -21,7 +21,9 @@
     </header>
     <main>
       <form action="">
-        <label for="search"><i class="ri-search-line"></i></label>
+        <label for="search">
+          <i class="ri-search-line"></i>
+        </label>
         <input
           type="text"
           id="search"
@@ -67,13 +69,32 @@
             ></i>
           </button>
           <button class="pause hidden">
-            <i class="ri-pause-fill" onclick="toggleStopwatch()"></i>
+            <i class="ri-pause-fill" onclick="stopStopwatch()"></i>
           </button>
           <button class="reset hidden">
             <i class="ri-square-fill" onclick="resetStopwatch()"></i>
           </button>
         </div>
         <div class="display-stopwatch"></div>
+      </div>
+      <div class="timer-container hidden">
+        <div class="timer-input">
+          <input type="number" placeholder="00" min="00" max="23" />
+          <input type="number" placeholder="00" min="00" max="59" />
+          <input type="number" placeholder="00" min="00" max="59" />
+        </div>
+        <div class="timer hidden">00:00:00</div>
+        <div class="timer-buttons">
+          <button class="timer-start" onclick="startTimer()">
+            <i class="ri-play-mini-fill"></i>
+          </button>
+          <button class="timer-pause hidden" onclick="pauseTimer()">
+            <i class="ri-pause-fill"></i>
+          </button>
+          <button class="timer-reset hidden" onclick="resetTimer()">
+            <i class="ri-square-fill"></i>
+          </button>
+        </div>
       </div>
     </main>
     <script src="javascript/script.js"></script>

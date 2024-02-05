@@ -9,7 +9,7 @@ body {
   height: 100vh;
   background-color: #000000;
   font-family: Arial, Helvetica, sans-serif;
-  /* overflow: hidden; */
+  overflow: hidden;
 }
 
 header {
@@ -159,7 +159,7 @@ input[type="number"]:focus {
   display: grid;
   margin-top: 30px;
   grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-rows: repeat(3, 1fr);
   overflow: auto;
 }
 
@@ -244,8 +244,9 @@ input[type="number"]:focus {
   width: 50%;
   height: 250px;
   padding: 10px;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-template-rows: repeat(4, 1fr);
   margin: 35px auto 0;
   overflow: auto;
 }
@@ -286,4 +287,12 @@ input[type="number"]:focus {
 
 .hidden {
   display: none;
+}
+
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #005fb9;
 }
